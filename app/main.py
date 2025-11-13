@@ -58,6 +58,14 @@ async def whoami(
 # Mount MCP router (JSON-RPC-like interface for tools)
 app.include_router(mcp_router, prefix="/mcp", tags=["mcp"])
 
+# Mount tools router (REST API for tool listing and invocation)
+try:
+    from app.routes.tools import router as tools_router
+    app.include_router(tools_router, tags=["tools"])
+except ImportError as e:
+    # Router might not be available in all configurations
+    pass
+
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(

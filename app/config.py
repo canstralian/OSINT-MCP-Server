@@ -9,7 +9,8 @@ from functools import lru_cache
 from logging import Logger, getLogger
 from typing import Optional
 
-from pydantic import AnyHttpUrl, BaseSettings, Field
+from pydantic import AnyHttpUrl, Field
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
