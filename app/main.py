@@ -13,6 +13,7 @@ from fastapi.responses import JSONResponse
 from app.config import Settings, get_settings
 from app.logging_config import configure_logging
 from app.mcp.server import router as mcp_router
+from app.routes.tools import router as tools_router
 from app.security.auth import get_current_client, ClientIdentity
 
 configure_logging()
@@ -57,6 +58,9 @@ async def whoami(
 
 # Mount MCP router (JSON-RPC-like interface for tools)
 app.include_router(mcp_router, prefix="/mcp", tags=["mcp"])
+
+# Mount tools router (REST API for tool discovery and invocation)
+app.include_router(tools_router, tags=["tools"])
 
 
 @app.exception_handler(HTTPException)
