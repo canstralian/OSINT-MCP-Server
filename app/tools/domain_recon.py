@@ -5,7 +5,7 @@
 Domain reconnaissance OSINT tool.
 """
 
-from typing import Any, Dict, List
+from typing import Any
 
 from app.security.auth import ClientIdentity
 from app.tools.base import OSINTTool
@@ -20,15 +20,13 @@ class DomainReconTool(OSINTTool):
     """
 
     name: str = "domain_recon"
-    description: str = (
-        "Aggregates public OSINT data about a domain (passive only)."
-    )
+    description: str = "Aggregates public OSINT data about a domain (passive only)."
 
     async def execute(
         self,
-        args: Dict[str, Any],
+        args: dict[str, Any],
         client: ClientIdentity,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Run passive domain OSINT lookups."""
         domain = args.get("domain")
         if not isinstance(domain, str):
@@ -42,8 +40,8 @@ class DomainReconTool(OSINTTool):
         # Placeholder data source calls.
         # Replace with real async HTTP calls to provider(s).
         # This stub shows the response shape and ethics.
-        ct_entries: List[Dict[str, Any]] = []
-        dns_records: List[Dict[str, Any]] = []
+        ct_entries: list[dict[str, Any]] = []
+        dns_records: list[dict[str, Any]] = []
 
         if include_ct_logs:
             ct_entries = [
