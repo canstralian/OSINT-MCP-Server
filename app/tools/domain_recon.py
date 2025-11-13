@@ -8,7 +8,7 @@ Domain reconnaissance OSINT tool.
 from typing import Any, Dict, List
 
 from app.security.auth import ClientIdentity
-from app.tools.base import OSINTTool
+from app.tools.base import OSINTTool, ToolDefinition
 from app.validators.targets import validate_domain
 
 
@@ -23,6 +23,48 @@ class DomainReconTool(OSINTTool):
     description: str = (
         "Aggregates public OSINT data about a domain (passive only)."
     )
+
+    def invoke(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Synchronous wrapper for execute method."""
+        # For now, just call the async execute method without client
+        import asyncio
+        try:
+            # Create a dummy client identity
+            client = ClientIdentity(client_id="system", scopes=[])
+            return asyncio.run(self.execute(params, client))
+        except Exception as e:
+            return self._normalize_output(
+                text=f"Domain recon failed: {str(e)}",
+                data={"error": str(e)},
+                meta={"status": "error"}
+            )
+    
+    def definition(self) -> ToolDefinition:
+        """Return tool definition."""
+        return ToolDefinition(
+            name=self.name,
+            description=self.description,
+            parameters={
+                "domain": {
+                    "type": "string",
+                    "description": "Domain to investigate",
+                    "required": True
+                },
+                "include_ct_logs": {
+                    "type": "boolean",
+                    "description": "Include certificate transparency logs",
+                    "required": False
+                },
+                "include_passive_dns": {
+                    "type": "boolean",
+                    "description": "Include passive DNS records",
+                    "required": False
+                }
+            },
+            streamable=False,
+            requires_auth=False,
+            category="domain_intelligence"
+        )
 
     async def execute(
         self,
