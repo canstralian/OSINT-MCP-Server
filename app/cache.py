@@ -172,3 +172,48 @@ def get_cache() -> RedisCache:
     if _cache_instance is None:
         _cache_instance = RedisCache()
     return _cache_instance
+
+
+# Async version for compatibility
+async def get_cache_async() -> RedisCache:
+    """
+    Get or create global cache instance (async version for compatibility).
+
+    Returns:
+        RedisCache instance
+    """
+    return get_cache()
+
+    # Async method aliases for compatibility
+    async def get_async(self, key: str):
+        """Async wrapper for get."""
+
+
+class AsyncRedisCache:
+    """
+    Async wrapper for RedisCache for backward compatibility.
+    
+    Provides async methods that wrap synchronous Redis operations.
+    """
+
+    def __init__(self, cache: RedisCache):
+        """Initialize with a RedisCache instance."""
+        self._cache = cache
+
+    async def get(self, key: str):
+        """Async get method."""
+        return self._cache.get(key)
+
+    async def set(self, key: str, value, ttl_seconds: int = 3600):
+        """Async set method."""
+        return self._cache.set(key, value, ttl_seconds)
+
+
+async def get_cache_async() -> AsyncRedisCache:
+    """
+    Get async cache wrapper (for backward compatibility).
+
+    Returns:
+        AsyncRedisCache instance wrapping the sync cache
+    """
+    return AsyncRedisCache(get_cache())
