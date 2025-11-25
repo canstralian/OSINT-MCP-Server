@@ -42,6 +42,9 @@ dev = [
     "mypy>=1.5.0",
 ]
 
+[project.scripts]
+osint-mcp-server = "osint_mcp:main"
+
 [project.urls]
 Homepage = "https://github.com/canstralian/OSINT-MCP-Server"
 Repository = "https://github.com/canstralian/OSINT-MCP-Server"
