@@ -9,7 +9,7 @@ from typing import Dict
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.cache.redis_cache import get_cache
+from app.cache import get_cache_async as get_cache
 from app.mcp.schemas import MCPToolRequest, MCPToolResponse, MCPError
 from app.security.auth import ClientIdentity, get_current_client
 from app.tools import registry
