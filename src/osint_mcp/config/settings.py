@@ -69,6 +69,7 @@ class ServerConfig(BaseModel):
 
         # Load API keys
         config.api_keys = {
+            "abuseipdb": os.getenv("ABUSEIPDB_API_KEY"),
             "ipinfo": os.getenv("IPINFO_API_KEY"),
             "shodan": os.getenv("SHODAN_API_KEY"),
         }
