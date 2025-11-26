@@ -10,7 +10,7 @@ from collections.abc import Generator
 from typing import Any
 
 
-def sse_event(data: Any, event: str = "message", event_id: str = None) -> str:
+def sse_event(data: Any, event: str = "message", event_id: str | None = None) -> str:
     """
     Format data as an SSE event.
 
