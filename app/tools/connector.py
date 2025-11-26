@@ -256,8 +256,8 @@ class ConnectorManager:
             headers.update(auth_headers)
 
         # Extract body and query params
-        body = params.pop("body", None)
-        query_params = params  # Remaining params are query params
+        body = params.get("body")
+        query_params = {k: v for k, v in params.items() if k != "body"}  # Remaining params are query params
 
         # Make request
         try:
