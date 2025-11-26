@@ -23,16 +23,7 @@ jobs:
       - name: TruffleHog OSS
         uses: trufflesecurity/trufflehog@v3.91.1
         with:
-          # Scan the git history of this repo
-          scan: git
-          # You can also explicitly set the repo, but default is current
-          # repo: ${{ github.repository }}
-
-          # Fail on findings (default true, keep explicit for clarity)
-          fail: true
-
-          # Optional: add / tweak rulesets
-          # extra_rules: .github/trufflehog-rules.toml
-
-          # Optional: narrow scope if needed
-          # path: "."
+          # Repository path to scan
+          path: ./
+          # Extra args: --fail is already default, add --only-verified to reduce false positives
+          # extra_args: --only-verified
