@@ -33,7 +33,7 @@ class InvokeResponse(BaseModel):
 
     status: str
     result: dict[str, Any] = {}
-    error: str = None
+    error: str | None = None
 
 
 # Create router
