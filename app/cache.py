@@ -175,15 +175,6 @@ def get_cache() -> RedisCache:
 
 
 # Async version for compatibility
-async def get_cache_async() -> RedisCache:
-    """
-    Get or create global cache instance (async version for compatibility).
-
-    Returns:
-        RedisCache instance
-    """
-    return get_cache()
-
     # Async method aliases for compatibility
     async def get_async(self, key: str):
         """Async wrapper for get."""
