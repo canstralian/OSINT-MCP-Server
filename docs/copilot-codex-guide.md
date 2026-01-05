@@ -87,7 +87,7 @@ jobs:
           black --check .
       - name: Test
         run: |
-          pytest --maxfail=1 --disable-warnings -q
+          pytest --maxfail=1 -q
 ```
 
 ## Best Practices: Releases and Scanning
