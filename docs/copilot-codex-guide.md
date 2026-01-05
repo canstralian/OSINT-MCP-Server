@@ -80,7 +80,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install .[dev]
       - name: Lint
         run: |
           ruff check .
