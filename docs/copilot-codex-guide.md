@@ -134,7 +134,7 @@ jobs:
         uses: actions/dependency-review-action@v4
 
   codeql:
-    uses: github/codeql-action/.github/workflows/codeql.yml@v3
+    uses: github/codeql-action/codeql-analysis.yml@v3
     with:
       languages: python
 ```
