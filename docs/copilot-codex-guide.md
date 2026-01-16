@@ -9,7 +9,7 @@ This guide standardizes how GitHub Copilot and Codex operate within the Trading 
 - **Async Patterns:** Use async I/O for network-bound tasks; avoid blocking calls in event loops. Wrap external I/O with timeouts and cancellations.
 - **Security Defaults:** Assume zero trust. Validate inputs, sanitize logs, and prefer least-privilege credentials. Never hardcode secrets; use the secrets manager and CI-provided environment variables.
 - **Logging & Observability:** Emit structured logs with correlation/trace IDs. Surface critical events to the central APM. Avoid noisy logs; use rate limits for chatty components.
-- **CI/CD Integration:** All branches open pull requests that trigger lint and test gates. Mainline merges require green checks. Release branches run semantic versioning/tagging workflows.
+- **CI/CD Integration:** Pull requests trigger the `Quality Gate` workflow for linting and tests, while mainline merges require green checks. Release branches run semantic versioning/tagging workflows.
 - **Version Control:** Keep changes small and atomic. Use meaningful commit messages. Rebase over merge commits for cleaner history where project policy allows.
 
 ## Custom Instruction Behavior
@@ -56,7 +56,7 @@ codex:
 ```
 
 ## GitHub Workflow: Lint & Test Automation
-Trigger when code changes are proposed. Documentation-only changes (`docs/**`, `**/*.md`) bypass the workflow to save resources.
+Trigger when code changes are proposed. Documentation-only changes (`docs/**`, `**/*.md`) bypass the workflow to save resources. The `Quality Gate` workflow matches the CI configuration in `.github/workflows/quality-gate.yml`.
 
 ```yaml
 name: quality-gate
