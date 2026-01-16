@@ -5,7 +5,7 @@
 MCP request and response schemas.
 """
 
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -15,7 +15,7 @@ class MCPToolRequest(BaseModel):
 
     request_id: str = Field(..., alias="requestId")
     tool_name: str = Field(..., alias="tool")
-    args: Dict[str, Any] = Field(default_factory=dict)
+    args: dict[str, Any] = Field(default_factory=dict)
 
 
 class MCPError(BaseModel):
@@ -23,7 +23,7 @@ class MCPError(BaseModel):
 
     code: str
     message: str
-    details: Optional[Dict[str, Any]] = None
+    details: dict[str, Any] | None = None
 
 
 class MCPToolResponse(BaseModel):
@@ -32,5 +32,5 @@ class MCPToolResponse(BaseModel):
     request_id: str = Field(..., alias="requestId")
     tool_name: str = Field(..., alias="tool")
     status: Literal["success", "error"]
-    data: Optional[Dict[str, Any]] = None
-    error: Optional[MCPError] = None
+    data: dict[str, Any] | None = None
+    error: MCPError | None = None

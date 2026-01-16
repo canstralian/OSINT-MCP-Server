@@ -42,11 +42,11 @@ class DataNotFoundError(OSINTError):
 def handle_error(error: Exception, context: str = "") -> dict[str, Any]:
     """
     Handle and format errors consistently.
-    
+
     Args:
         error: The exception that occurred
         context: Additional context about where the error occurred
-        
+
     Returns:
         Formatted error dictionary
     """
@@ -72,14 +72,14 @@ def handle_error(error: Exception, context: str = "") -> dict[str, Any]:
 def validate_result(result: Any, expected_fields: list[str] | None = None) -> bool:
     """
     Validate that a result has expected structure.
-    
+
     Args:
         result: The result to validate
         expected_fields: List of required fields
-        
+
     Returns:
         True if validation passes
-        
+
     Raises:
         InvalidInputError: If validation fails
     """
