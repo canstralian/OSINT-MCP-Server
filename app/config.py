@@ -7,7 +7,6 @@ Application configuration and settings.
 
 from functools import lru_cache
 from logging import Logger, getLogger
-from typing import Optional
 
 from pydantic import AnyHttpUrl, Field
 from pydantic_settings import BaseSettings
@@ -26,10 +25,10 @@ class Settings(BaseSettings):
     # Auth
     api_key_header_name: str = Field(default="x-api-key")
     # In production: never hard-code; use env/secret manager.
-    demo_api_key: Optional[str] = Field(default=None)
+    demo_api_key: str | None = Field(default=None)
 
     # Example of an external OSINT API endpoint placeholder
-    example_osint_api_base: Optional[AnyHttpUrl] = None
+    example_osint_api_base: AnyHttpUrl | None = None
 
     class Config:
         env_file = ".env"

@@ -20,7 +20,7 @@ import json
 import logging
 import os
 from functools import wraps
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class RedisCache:
     instead of raising exceptions.
     """
 
-    def __init__(self, redis_url: Optional[str] = None):
+    def __init__(self, redis_url: str | None = None):
         """
         Initialize Redis cache.
 
@@ -73,7 +73,7 @@ class RedisCache:
                 f"Redis connection failed: {e}. Cache will be disabled."
             )
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Any | None:
         """
         Get value from cache.
 
@@ -109,7 +109,7 @@ class RedisCache:
         self,
         key: str,
         value: Any,
-        ttl_seconds: Optional[int] = None
+        ttl_seconds: int | None = None
     ) -> bool:
         """
         Set value in cache with optional TTL.
@@ -219,7 +219,7 @@ class RedisCache:
 
 
 # Global cache instance
-_cache_instance: Optional[RedisCache] = None
+_cache_instance: RedisCache | None = None
 
 
 def get_cache() -> RedisCache:
