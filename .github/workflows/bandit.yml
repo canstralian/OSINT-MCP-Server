@@ -1,38 +1,11 @@
-name: Security - Bandit
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-  schedule:
-    - cron: '32 8 * * 3'
+version: 2.1
 
 jobs:
   bandit:
-    permissions:
-      contents: read
-      security-events: write
-
-    runs-on: ubuntu-latest
-
+    docker:
+      image: python:3.8
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Bandit
-        run: pip install bandit
-
-      - name: Run Bandit (SARIF)
-        run: |
-          bandit -r . -f sarif -o bandit-results.sarif \
-            --severity-level high \
-            --confidence-level high
-
-      - name: Upload SARIF to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: bandit-results.sarif
+      - checkout: self
+      - run:
+          name: Run Bandit
+          command: bandit -f json -r .
