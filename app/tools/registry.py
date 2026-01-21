@@ -83,7 +83,7 @@ class ToolRegistry:
         """
         return list(self._tools.keys())
 
-    def list_definitions(self) -> builtins.list[dict]:
+    def list_definitions(self) -> list[dict]:
         """
         List all tool definitions.
 
