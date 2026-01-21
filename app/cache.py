@@ -20,7 +20,7 @@ import json
 import logging
 import os
 from functools import wraps
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 logger = logging.getLogger(__name__)
 
@@ -28,15 +28,15 @@ logger = logging.getLogger(__name__)
 class RedisCache:
     """
     Redis cache wrapper with safe JSON serialization and error handling.
-    
+
     Falls back gracefully if Redis is unavailable - operations return None
     instead of raising exceptions.
     """
-    
-    def __init__(self, redis_url: Optional[str] = None):
+
+    def __init__(self, redis_url: str | None = None):
         """
         Initialize Redis cache.
-        
+
         Args:
             redis_url: Redis connection URL. Defaults to REDIS_URL env var
                       or redis://localhost:6379/0
@@ -48,7 +48,7 @@ class RedisCache:
         self._client = None
         self._available = False
         self._initialize_client()
-    
+
     def _initialize_client(self) -> None:
         """Initialize Redis client with error handling."""
         try:
@@ -72,25 +72,25 @@ class RedisCache:
             logger.warning(
                 f"Redis connection failed: {e}. Cache will be disabled."
             )
-    
-    def get(self, key: str) -> Optional[Any]:
+
+    def get(self, key: str) -> Any | None:
         """
         Get value from cache.
-        
+
         Args:
             key: Cache key
-            
+
         Returns:
             Cached value if found, None otherwise
         """
         if not self._available or not self._client:
             return None
-        
+
         try:
             value = self._client.get(key)
             if value is None:
                 return None
-            
+
             # Deserialize JSON
             return json.loads(value)
         except json.JSONDecodeError as e:
@@ -104,36 +104,36 @@ class RedisCache:
         except Exception as e:
             logger.error(f"Cache get error for {key}: {e}")
             return None
-    
+
     def set(
         self,
         key: str,
         value: Any,
-        ttl_seconds: Optional[int] = None
+        ttl_seconds: int | None = None
     ) -> bool:
         """
         Set value in cache with optional TTL.
-        
+
         Args:
             key: Cache key
             value: Value to cache (must be JSON-serializable)
             ttl_seconds: Time-to-live in seconds. None for no expiration.
-            
+
         Returns:
             True if successful, False otherwise
         """
         if not self._available or not self._client:
             return False
-        
+
         try:
             # Serialize to JSON
             serialized = json.dumps(value, default=str)
-            
+
             if ttl_seconds:
                 self._client.setex(key, ttl_seconds, serialized)
             else:
                 self._client.set(key, serialized)
-            
+
             return True
         except (TypeError, ValueError) as e:
             logger.error(f"Failed to serialize value for {key}: {e}")
@@ -141,27 +141,27 @@ class RedisCache:
         except Exception as e:
             logger.error(f"Cache set error for {key}: {e}")
             return False
-    
+
     def delete(self, key: str) -> bool:
         """
         Delete key from cache.
-        
+
         Args:
             key: Cache key to delete
-            
+
         Returns:
             True if successful, False otherwise
         """
         if not self._available or not self._client:
             return False
-        
+
         try:
             self._client.delete(key)
             return True
         except Exception as e:
             logger.error(f"Cache delete error for {key}: {e}")
             return False
-    
+
     def cache_result(
         self,
         ttl_seconds: int = 3600,
@@ -169,14 +169,14 @@ class RedisCache:
     ) -> Callable:
         """
         Decorator to cache function results.
-        
+
         Args:
             ttl_seconds: Cache TTL in seconds
             key_prefix: Prefix for cache keys
-            
+
         Returns:
             Decorator function
-            
+
         Example:
             @cache.cache_result(ttl_seconds=900, key_prefix="search")
             def expensive_search(query: str) -> dict:
@@ -188,7 +188,7 @@ class RedisCache:
             def wrapper(*args, **kwargs):
                 # Build cache key from function name and arguments
                 import hashlib
-                
+
                 args_str = json.dumps(
                     {"args": args, "kwargs": kwargs},
                     sort_keys=True,
@@ -197,35 +197,35 @@ class RedisCache:
                 args_hash = hashlib.sha256(
                     args_str.encode()
                 ).hexdigest()[:16]
-                
+
                 cache_key = f"{key_prefix}:{func.__name__}:{args_hash}"
-                
+
                 # Try to get from cache
                 cached = self.get(cache_key)
                 if cached is not None:
                     logger.debug(f"Cache hit for {cache_key}")
                     return cached
-                
+
                 # Execute function
                 result = func(*args, **kwargs)
-                
+
                 # Cache result
                 self.set(cache_key, result, ttl_seconds)
-                
+
                 return result
-            
+
             return wrapper
         return decorator
 
 
 # Global cache instance
-_cache_instance: Optional[RedisCache] = None
+_cache_instance: RedisCache | None = None
 
 
 def get_cache() -> RedisCache:
     """
     Get or create global cache instance.
-    
+
     Returns:
         RedisCache instance
     """
