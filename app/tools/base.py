@@ -112,6 +112,8 @@ class OSINTTool(ABC):
     """
     Abstract base class for OSINT tools (legacy interface).
 
+    .. deprecated:: 0.1.0
+        Use :class:`OsintTool` instead. This class is maintained for backward compatibility only.
     This is kept for backward compatibility with existing tools
     that use the async execute() method interface.
     """
