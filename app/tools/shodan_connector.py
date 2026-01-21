@@ -185,7 +185,7 @@ class ShodanConnector(OsintTool):
         except requests.RequestException as e:
             logger.error(f"Shodan search failed: {e}")
             return self._normalize_output(
-                text=f"Shodan search failed: {str(e)}", data={}, meta={"error": str(e)}
+                text="Shodan search failed. Please check your query and try again.", data={}, meta={"error": "Shodan search failed"}
             )
 
     def _host(self, ip: str) -> dict[str, Any]:
