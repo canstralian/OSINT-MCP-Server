@@ -183,8 +183,28 @@ def get_cache() -> RedisCache:
 class AsyncRedisCache:
     """
     Async wrapper for RedisCache for backward compatibility.
-    
-    Provides async methods that wrap synchronous Redis operations.
+
+    This class provides async methods (`get`, `set`) that internally call the synchronous
+    methods of a `RedisCache` instance. It is intended for use in codebases that expect
+    async cache interfaces, but where the underlying cache implementation is synchronous.
+
+    Use this class if you have async code (e.g., using `async def` functions) that expects
+    to `await` cache operations, but you do not require true async Redis I/O. For new code,
+    prefer using `RedisCache` directly unless you need async compatibility.
+
+    Example:
+        ```python
+        from app.cache import get_cache_async
+
+        async def fetch_data(key):
+            cache = await get_cache_async()
+            value = await cache.get(key)
+            if value is None:
+                # ... fetch and set ...
+                await cache.set(key, "some value")
+                return "some value"
+            return value
+        ```
     """
 
     def __init__(self, cache: RedisCache):
