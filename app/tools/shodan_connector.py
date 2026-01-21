@@ -127,14 +127,16 @@ class ShodanConnector(OsintTool):
         # Make API request
         url = f"{self.base_url}/shodan/host/search"
         params = {
-            "key": self.api_key,
             "query": query,
             "page": page,
         }
         if facets:
             params["facets"] = facets
 
-        headers = {"User-Agent": self.user_agent}
+        headers = {
+            "User-Agent": self.user_agent,
+            "Authorization": f"SHODAN {self.api_key}",
+        }
 
         try:
             response = requests.get(
