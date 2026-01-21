@@ -215,9 +215,9 @@ class AsyncRedisCache:
         """Async get method."""
         return self._cache.get(key)
 
-    async def set(self, key: str, value, ttl_seconds: int = 3600):
+    async def set(self, key: str, value, ttl: int = 3600):
         """Async set method."""
-        return self._cache.set(key, value, ttl_seconds)
+        return self._cache.set(key, value, ttl)
 
 
 async def get_cache_async() -> AsyncRedisCache:
