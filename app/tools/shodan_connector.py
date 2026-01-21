@@ -207,13 +207,14 @@ class ShodanConnector(OsintTool):
 
         # Make API request
         url = f"{self.base_url}/shodan/host/{ip}"
-        params = {"key": self.api_key}
-        headers = {"User-Agent": self.user_agent}
+        headers = {
+            "User-Agent": self.user_agent,
+            "Authorization": f"Bearer {self.api_key}",
+        }
 
         try:
             response = requests.get(
                 url,
-                params=params,
                 headers=headers,
                 timeout=self.timeout,
             )
