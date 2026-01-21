@@ -251,5 +251,7 @@ class ShodanConnector(OsintTool):
         except requests.RequestException as e:
             logger.error(f"Shodan host lookup failed: {e}")
             return self._normalize_output(
-                text=f"Shodan host lookup failed: {str(e)}", data={}, meta={"error": str(e)}
+                text="Shodan host lookup failed. Please check the IP address and try again.",
+                data={},
+                meta={"error": "Shodan host lookup failed"}
             )
