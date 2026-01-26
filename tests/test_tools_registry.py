@@ -13,6 +13,10 @@ from unittest.mock import patch
 
 import pytest
 
+# Skip all tests in this file if fastapi is not installed
+# These tests require the app/ directory which has FastAPI dependencies
+pytest.importorskip("fastapi")
+
 from app.tools.gradio_connector import GradioConnector
 from app.tools.registry import ToolRegistry, get_registry
 from app.tools.shodan_connector import ShodanConnector
