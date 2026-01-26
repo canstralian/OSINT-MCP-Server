@@ -189,7 +189,7 @@ async def list_tools() -> list[Tool]:
         Tool(
             name="check_ip_reputation",
             description=(
-                "Check IP reputation using threat intelligence databases " "(requires API key)"
+                "Check IP reputation using threat intelligence databases (requires API key)"
             ),
             inputSchema={
                 "type": "object",
@@ -266,7 +266,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
                 )
             ]
 
-        logger.info(f"Executing tool: {name} with arguments keys: {list(arguments.keys())}")
+        logger.info(f"Executing tool: {name} with arguments keys: {tuple(arguments.keys())}")
 
         # Route to appropriate tool handler
         handler = TOOL_HANDLERS.get(name)
