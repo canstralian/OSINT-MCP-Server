@@ -33,7 +33,12 @@ async def test_call_tool_dns_lookup_with_default_record_type():
         # Verify dns_lookup was called with default record_type="A"
         mock_dns.assert_called_once_with("example.com", "A")
         assert len(result) == 1
-        assert "example.com" in result[0].text
+        # Verify the response contains the expected domain in JSON format
+        import json
+
+        response_data = json.loads(result[0].text)
+        assert response_data["domain"] == "example.com"
+        assert response_data["success"] is True
 
 
 @pytest.mark.asyncio
