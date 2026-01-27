@@ -119,8 +119,9 @@ def stream(
                 # Send completion event
                 yield sse_event({"status": "complete"}, event="done")
             except Exception as e:
-                logger.error(f"Error in SSE stream: {e}")
-                yield sse_event({"error": str(e)}, event="error")
+                # Log full error details server-side, send generic error to client
+                logger.error(f"Error in SSE stream: {e}", exc_info=True)
+                yield sse_event({"error": "Stream error"}, event="error")
 
         return async_stream()
 
@@ -136,7 +137,8 @@ def stream(
                 # Send completion event
                 yield sse_event({"status": "complete"}, event="done")
             except Exception as e:
-                logger.error(f"Error in SSE stream: {e}")
-                yield sse_event({"error": str(e)}, event="error")
+                # Log full error details server-side, send generic error to client
+                logger.error(f"Error in SSE stream: {e}", exc_info=True)
+                yield sse_event({"error": "Stream error"}, event="error")
 
         return sync_stream()
