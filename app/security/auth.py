@@ -6,9 +6,8 @@ Simple API key auth for MCP clients.
 """
 
 from dataclasses import dataclass
-from typing import List
 
-from fastapi import Depends, Header, HTTPException, status
+from fastapi import Header, HTTPException, status
 
 from app.config import get_settings
 
@@ -18,7 +17,7 @@ class ClientIdentity:
     """Represents authenticated client identity."""
 
     client_id: str
-    scopes: List[str]
+    scopes: list[str]
 
 
 async def get_current_client(

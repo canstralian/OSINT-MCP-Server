@@ -7,7 +7,7 @@ Validators and ethical guardrails for OSINT targets.
 
 import ipaddress
 import re
-from typing import Any, Dict
+from typing import Any
 
 _DOMAIN_REGEX = re.compile(
     r"^(?=.{1,253}$)(?!-)[A-Za-z0-9-]{1,63}(?<!-)"
@@ -37,7 +37,7 @@ def is_private_ip(value: str) -> bool:
     return ip_obj.is_private or ip_obj.is_loopback or ip_obj.is_reserved
 
 
-def validate_target_constraints(args: Dict[str, Any]) -> None:
+def validate_target_constraints(args: dict[str, Any]) -> None:
     """
     Apply high-level ethical guardrails to target parameters.
 
@@ -45,6 +45,4 @@ def validate_target_constraints(args: Dict[str, Any]) -> None:
     """
     for key, value in args.items():
         if "ip" in key and isinstance(value, str) and is_private_ip(value):
-            raise ValueError(
-                "Private or internal IPs are not permitted OSINT targets."
-            )
+            raise ValueError("Private or internal IPs are not permitted OSINT targets.")

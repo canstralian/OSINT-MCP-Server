@@ -5,15 +5,15 @@
 FastAPI entrypoint for the OSINT MCP server.
 """
 
-from typing import Any, Dict
+from typing import Any
 
 from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.responses import JSONResponse
 
-from app.config import Settings, get_settings
+from app.config import get_settings
 from app.logging_config import configure_logging
 from app.mcp.server import router as mcp_router
-from app.security.auth import get_current_client, ClientIdentity
+from app.security.auth import ClientIdentity, get_current_client
 
 configure_logging()
 
@@ -39,7 +39,7 @@ async def add_process_time_header(request: Request, call_next) -> JSONResponse:
 
 
 @app.get("/health", tags=["system"])
-async def health_check() -> Dict[str, str]:
+async def health_check() -> dict[str, str]:
     """Basic health endpoint for probes."""
     return {"status": "ok"}
 
@@ -47,7 +47,7 @@ async def health_check() -> Dict[str, str]:
 @app.get("/whoami", tags=["system"])
 async def whoami(
     client: ClientIdentity = Depends(get_current_client),
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Debug endpoint to inspect client identity."""
     return {
         "client_id": client.client_id,
@@ -61,8 +61,9 @@ app.include_router(mcp_router, prefix="/mcp", tags=["mcp"])
 # Mount tools router (REST API for tool listing and invocation)
 try:
     from app.routes.tools import router as tools_router
+
     app.include_router(tools_router, tags=["tools"])
-except ImportError as e:
+except ImportError:
     # Router might not be available in all configurations
     pass
 

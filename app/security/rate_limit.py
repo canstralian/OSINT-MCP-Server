@@ -5,8 +5,6 @@
 Rate limiting utilities (stub).
 """
 
-from fastapi import HTTPException, status
-
 
 async def enforce_rate_limit(client_id: str) -> None:
     """

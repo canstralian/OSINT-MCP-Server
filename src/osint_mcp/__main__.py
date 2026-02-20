@@ -3,4 +3,5 @@
 
 if __name__ == "__main__":
     from osint_mcp import main
+
     main()

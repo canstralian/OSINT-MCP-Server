@@ -1,4 +1,5 @@
 """Tests for the osint_mcp.utils facade and server routing."""
+
 import json
 
 import pytest
@@ -17,8 +18,8 @@ def test_utils_facade_exports():
         rate_limiter,
         validate_domain,
         validate_ip_address,
-        validate_url,
         validate_result,
+        validate_url,
     )
 
     assert DataNotFoundError

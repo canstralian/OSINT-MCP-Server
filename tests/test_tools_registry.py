@@ -13,9 +13,11 @@ from unittest.mock import patch
 
 import pytest
 
-from app.tools.gradio_connector import GradioConnector
-from app.tools.registry import ToolRegistry, get_registry
-from app.tools.shodan_connector import ShodanConnector
+fastapi = pytest.importorskip("fastapi", reason="app/ extras not installed")
+
+from app.tools.gradio_connector import GradioConnector  # noqa: E402
+from app.tools.registry import ToolRegistry, get_registry  # noqa: E402
+from app.tools.shodan_connector import ShodanConnector  # noqa: E402
 
 
 def test_registry_create():

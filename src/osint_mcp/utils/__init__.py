@@ -3,6 +3,7 @@
 Other modules import from `osint_mcp.utils` as the public utility surface.
 Keep this file exporting the commonly used helpers/exceptions.
 """
+
 from .errors import (
     DataNotFoundError,
     EthicalViolationError,

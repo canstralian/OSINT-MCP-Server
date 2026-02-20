@@ -1,4 +1,5 @@
 """DNS and WHOIS lookup tools."""
+
 import asyncio
 import logging
 from typing import Any
@@ -22,11 +23,11 @@ logger = logging.getLogger(__name__)
 async def dns_lookup(domain: str, record_type: str = "A") -> dict[str, Any]:
     """
     Perform DNS lookup for a domain.
-    
+
     Args:
         domain: Domain name to lookup
         record_type: DNS record type (A, AAAA, MX, NS, TXT, etc.)
-        
+
     Returns:
         Dictionary containing DNS records
     """
@@ -47,10 +48,7 @@ async def dns_lookup(domain: str, record_type: str = "A") -> dict[str, Any]:
 
         # Run DNS query in thread pool to avoid blocking
         loop = asyncio.get_event_loop()
-        answers = await loop.run_in_executor(
-            None,
-            lambda: resolver.resolve(domain, record_type)
-        )
+        answers = await loop.run_in_executor(None, lambda: resolver.resolve(domain, record_type))
 
         records = [str(rdata) for rdata in answers]
 
@@ -59,7 +57,7 @@ async def dns_lookup(domain: str, record_type: str = "A") -> dict[str, Any]:
             "domain": domain,
             "record_type": record_type,
             "records": records,
-            "ttl": answers.rrset.ttl if hasattr(answers, 'rrset') else None,
+            "ttl": answers.rrset.ttl if hasattr(answers, "rrset") else None,
         }
 
         logger.info(f"DNS lookup successful: {domain} - found {len(records)} records")
@@ -78,10 +76,10 @@ async def dns_lookup(domain: str, record_type: str = "A") -> dict[str, Any]:
 async def reverse_dns_lookup(ip_address: str) -> dict[str, Any]:
     """
     Perform reverse DNS lookup for an IP address.
-    
+
     Args:
         ip_address: IP address to lookup
-        
+
     Returns:
         Dictionary containing reverse DNS information
     """
@@ -103,10 +101,7 @@ async def reverse_dns_lookup(ip_address: str) -> dict[str, Any]:
 
         # Run DNS query in thread pool
         loop = asyncio.get_event_loop()
-        answers = await loop.run_in_executor(
-            None,
-            lambda: resolver.resolve(rev_name, "PTR")
-        )
+        answers = await loop.run_in_executor(None, lambda: resolver.resolve(rev_name, "PTR"))
 
         hostnames = [str(rdata) for rdata in answers]
 
@@ -130,10 +125,10 @@ async def reverse_dns_lookup(ip_address: str) -> dict[str, Any]:
 async def get_nameservers(domain: str) -> dict[str, Any]:
     """
     Get nameservers for a domain.
-    
+
     Args:
         domain: Domain name to lookup
-        
+
     Returns:
         Dictionary containing nameserver information
     """
@@ -151,10 +146,7 @@ async def get_nameservers(domain: str) -> dict[str, Any]:
         resolver.timeout = config.ethical_guardrails.request_timeout
 
         loop = asyncio.get_event_loop()
-        answers = await loop.run_in_executor(
-            None,
-            lambda: resolver.resolve(domain, "NS")
-        )
+        answers = await loop.run_in_executor(None, lambda: resolver.resolve(domain, "NS"))
 
         nameservers = [str(rdata) for rdata in answers]
 
@@ -162,10 +154,7 @@ async def get_nameservers(domain: str) -> dict[str, Any]:
         ns_details = []
         for ns in nameservers:
             try:
-                ns_answers = await loop.run_in_executor(
-                    None,
-                    lambda: resolver.resolve(ns, "A")
-                )
+                ns_answers = await loop.run_in_executor(None, lambda: resolver.resolve(ns, "A"))
                 ips = [str(rdata) for rdata in ns_answers]
                 ns_details.append({"hostname": ns, "ips": ips})
             except Exception:
@@ -191,10 +180,10 @@ async def get_nameservers(domain: str) -> dict[str, Any]:
 async def get_mx_records(domain: str) -> dict[str, Any]:
     """
     Get MX (mail exchange) records for a domain.
-    
+
     Args:
         domain: Domain name to lookup
-        
+
     Returns:
         Dictionary containing MX records
     """
@@ -212,10 +201,7 @@ async def get_mx_records(domain: str) -> dict[str, Any]:
         resolver.timeout = config.ethical_guardrails.request_timeout
 
         loop = asyncio.get_event_loop()
-        answers = await loop.run_in_executor(
-            None,
-            lambda: resolver.resolve(domain, "MX")
-        )
+        answers = await loop.run_in_executor(None, lambda: resolver.resolve(domain, "MX"))
 
         mx_records = [
             {

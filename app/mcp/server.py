@@ -5,12 +5,10 @@
 MCP router that dispatches tool calls.
 """
 
-from typing import Dict
-
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.cache.redis_cache import get_cache
-from app.mcp.schemas import MCPToolRequest, MCPToolResponse, MCPError
+from app.mcp.schemas import MCPError, MCPToolRequest, MCPToolResponse
 from app.security.auth import ClientIdentity, get_current_client
 from app.tools import registry
 from app.tools.base import OSINTTool
@@ -52,7 +50,7 @@ async def invoke_tool(
             )
 
     try:
-        result: Dict = await tool.execute(args=request.args, client=client)
+        result: dict = await tool.execute(args=request.args, client=client)
     except ValueError as exc:
         # Input-related errors
         return MCPToolResponse(

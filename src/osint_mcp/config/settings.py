@@ -1,4 +1,5 @@
 """Configuration management for OSINT MCP Server."""
+
 import os
 
 from dotenv import load_dotenv
@@ -17,9 +18,7 @@ class EthicalGuardrails(BaseModel):
     respect_robots_txt: bool = Field(default=True)
 
     # User agent for web requests
-    user_agent: str = Field(
-        default="OSINT-MCP-Server/0.1.0 (Educational/Research Purpose)"
-    )
+    user_agent: str = Field(default="OSINT-MCP-Server/0.1.0 (Educational/Research Purpose)")
 
     # Maximum concurrent requests
     max_concurrent_requests: int = Field(default=5, ge=1, le=20)

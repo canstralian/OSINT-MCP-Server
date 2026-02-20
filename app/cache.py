@@ -19,8 +19,9 @@ Default cache TTLs:
 import json
 import logging
 import os
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -41,10 +42,7 @@ class RedisCache:
             redis_url: Redis connection URL. Defaults to REDIS_URL env var
                       or redis://localhost:6379/0
         """
-        self.redis_url = redis_url or os.getenv(
-            "REDIS_URL",
-            "redis://localhost:6379/0"
-        )
+        self.redis_url = redis_url or os.getenv("REDIS_URL", "redis://localhost:6379/0")
         self._client = None
         self._available = False
         self._initialize_client()
@@ -53,6 +51,7 @@ class RedisCache:
         """Initialize Redis client with error handling."""
         try:
             import redis
+
             self._client = redis.from_url(
                 self.redis_url,
                 decode_responses=True,
@@ -65,13 +64,10 @@ class RedisCache:
             logger.info("Redis cache initialized successfully")
         except ImportError:
             logger.warning(
-                "redis-py not installed. Cache will be disabled. "
-                "Install with: pip install redis"
+                "redis-py not installed. Cache will be disabled. " "Install with: pip install redis"
             )
         except Exception as e:
-            logger.warning(
-                f"Redis connection failed: {e}. Cache will be disabled."
-            )
+            logger.warning(f"Redis connection failed: {e}. Cache will be disabled.")
 
     def get(self, key: str) -> Any | None:
         """
@@ -105,12 +101,7 @@ class RedisCache:
             logger.error(f"Cache get error for {key}: {e}")
             return None
 
-    def set(
-        self,
-        key: str,
-        value: Any,
-        ttl_seconds: int | None = None
-    ) -> bool:
+    def set(self, key: str, value: Any, ttl_seconds: int | None = None) -> bool:
         """
         Set value in cache with optional TTL.
 
@@ -162,11 +153,7 @@ class RedisCache:
             logger.error(f"Cache delete error for {key}: {e}")
             return False
 
-    def cache_result(
-        self,
-        ttl_seconds: int = 3600,
-        key_prefix: str = "func"
-    ) -> Callable:
+    def cache_result(self, ttl_seconds: int = 3600, key_prefix: str = "func") -> Callable:
         """
         Decorator to cache function results.
 
@@ -183,20 +170,15 @@ class RedisCache:
                 # ... expensive operation
                 return results
         """
+
         def decorator(func: Callable) -> Callable:
             @wraps(func)
             def wrapper(*args, **kwargs):
                 # Build cache key from function name and arguments
                 import hashlib
 
-                args_str = json.dumps(
-                    {"args": args, "kwargs": kwargs},
-                    sort_keys=True,
-                    default=str
-                )
-                args_hash = hashlib.sha256(
-                    args_str.encode()
-                ).hexdigest()[:16]
+                args_str = json.dumps({"args": args, "kwargs": kwargs}, sort_keys=True, default=str)
+                args_hash = hashlib.sha256(args_str.encode()).hexdigest()[:16]
 
                 cache_key = f"{key_prefix}:{func.__name__}:{args_hash}"
 
@@ -215,6 +197,7 @@ class RedisCache:
                 return result
 
             return wrapper
+
         return decorator
 
 
