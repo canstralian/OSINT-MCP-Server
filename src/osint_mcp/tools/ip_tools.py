@@ -1,4 +1,5 @@
 """IP geolocation and information tools."""
+
 import logging
 from typing import Any
 
@@ -19,10 +20,10 @@ async def get_ip_info(ip_address: str) -> dict[str, Any]:
     """
     Get geolocation and network information for an IP address.
     Uses free ip-api.com service (no API key required for non-commercial use).
-    
+
     Args:
         ip_address: IP address to lookup
-        
+
     Returns:
         Dictionary containing IP information
     """
@@ -40,7 +41,7 @@ async def get_ip_info(ip_address: str) -> dict[str, Any]:
 
         async with httpx.AsyncClient(
             timeout=config.ethical_guardrails.request_timeout,
-            headers={"User-Agent": config.ethical_guardrails.user_agent}
+            headers={"User-Agent": config.ethical_guardrails.user_agent},
         ) as client:
             response = await client.get(url)
             response.raise_for_status()
@@ -71,7 +72,9 @@ async def get_ip_info(ip_address: str) -> dict[str, Any]:
             "as_number": data.get("as"),
         }
 
-        logger.info(f"IP info retrieved for {ip_address}: {data.get('country')}, {data.get('city')}")
+        logger.info(
+            f"IP info retrieved for {ip_address}: {data.get('country')}, {data.get('city')}"
+        )
         return result
 
     except httpx.HTTPStatusError as e:
@@ -86,10 +89,10 @@ async def check_ip_reputation(ip_address: str) -> dict[str, Any]:
     """
     Check IP reputation using AbuseIPDB free tier.
     Note: Requires ABUSEIPDB_API_KEY environment variable for full functionality.
-    
+
     Args:
         ip_address: IP address to check
-        
+
     Returns:
         Dictionary containing reputation information
     """
@@ -124,9 +127,7 @@ async def check_ip_reputation(ip_address: str) -> dict[str, Any]:
             "maxAgeInDays": "90",
         }
 
-        async with httpx.AsyncClient(
-            timeout=config.ethical_guardrails.request_timeout
-        ) as client:
+        async with httpx.AsyncClient(timeout=config.ethical_guardrails.request_timeout) as client:
             response = await client.get(url, headers=headers, params=params)
             response.raise_for_status()
             data = response.json()
@@ -147,8 +148,7 @@ async def check_ip_reputation(ip_address: str) -> dict[str, Any]:
         }
 
         logger.info(
-            f"IP reputation checked for {ip_address}: "
-            f"score={result['abuse_confidence_score']}"
+            f"IP reputation checked for {ip_address}: " f"score={result['abuse_confidence_score']}"
         )
         return result
 

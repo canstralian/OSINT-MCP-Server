@@ -1,4 +1,5 @@
 """Rate limiting and throttling utilities."""
+
 import asyncio
 import logging
 import time
@@ -16,7 +17,7 @@ class RateLimiter:
     def __init__(self, rate_per_minute: int | None = None):
         """
         Initialize rate limiter.
-        
+
         Args:
             rate_per_minute: Maximum requests per minute (defaults to config value)
         """
@@ -27,10 +28,10 @@ class RateLimiter:
     async def acquire(self, key: str = "default") -> None:
         """
         Acquire permission to make a request.
-        
+
         Args:
             key: Identifier for the rate limit bucket (e.g., API endpoint or domain)
-            
+
         Raises:
             RateLimitError: If rate limit would be exceeded
         """
@@ -40,8 +41,7 @@ class RateLimiter:
 
             # Remove old requests
             self.requests[key] = [
-                req_time for req_time in self.requests[key]
-                if req_time > cutoff_time
+                req_time for req_time in self.requests[key] if req_time > cutoff_time
             ]
 
             # Check if we're at the limit
@@ -50,8 +50,7 @@ class RateLimiter:
                 wait_time = 60 - (current_time - oldest_request)
 
                 logger.warning(
-                    f"Rate limit reached for '{key}'. "
-                    f"Would need to wait {wait_time:.1f}s"
+                    f"Rate limit reached for '{key}'. " f"Would need to wait {wait_time:.1f}s"
                 )
 
                 raise RateLimitError(
@@ -60,7 +59,7 @@ class RateLimiter:
                         "key": key,
                         "limit": self.rate_per_minute,
                         "wait_seconds": wait_time,
-                    }
+                    },
                 )
 
             # Record this request
@@ -73,10 +72,10 @@ class RateLimiter:
     def get_remaining(self, key: str = "default") -> int:
         """
         Get remaining requests available in current window.
-        
+
         Args:
             key: Identifier for the rate limit bucket
-            
+
         Returns:
             Number of requests remaining
         """
@@ -84,8 +83,7 @@ class RateLimiter:
         cutoff_time = current_time - 60
 
         recent_requests = [
-            req_time for req_time in self.requests.get(key, [])
-            if req_time > cutoff_time
+            req_time for req_time in self.requests.get(key, []) if req_time > cutoff_time
         ]
 
         return max(0, self.rate_per_minute - len(recent_requests))

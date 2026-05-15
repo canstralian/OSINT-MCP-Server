@@ -1,4 +1,5 @@
 """Web scraping and metadata extraction tools with ethical guardrails."""
+
 import logging
 from typing import Any
 from urllib.parse import urlparse
@@ -22,10 +23,10 @@ logger = logging.getLogger(__name__)
 async def check_robots_txt(url: str) -> dict[str, Any]:
     """
     Check robots.txt for a domain and verify if URL can be accessed.
-    
+
     Args:
         url: URL to check
-        
+
     Returns:
         Dictionary with robots.txt information
     """
@@ -54,12 +55,10 @@ async def check_robots_txt(url: str) -> dict[str, Any]:
 
         # Parse robots.txt
         rp = RobotFileParser()
-        rp.parse(robots_content.split('\n')) if robots_content else None
+        rp.parse(robots_content.split("\n")) if robots_content else None
 
         can_fetch = (
-            rp.can_fetch(config.ethical_guardrails.user_agent, url)
-            if robots_content
-            else True
+            rp.can_fetch(config.ethical_guardrails.user_agent, url) if robots_content else True
         )
 
         result = {
@@ -87,10 +86,10 @@ async def check_robots_txt(url: str) -> dict[str, Any]:
 async def get_http_headers(url: str) -> dict[str, Any]:
     """
     Get HTTP headers for a URL (HEAD request only, minimal bandwidth).
-    
+
     Args:
         url: URL to check
-        
+
     Returns:
         Dictionary containing HTTP headers
     """
@@ -104,8 +103,7 @@ async def get_http_headers(url: str) -> dict[str, Any]:
             robots_check = await check_robots_txt(url)
             if not robots_check.get("can_fetch", True):
                 raise EthicalViolationError(
-                    f"robots.txt disallows access to {url}",
-                    details={"url": url}
+                    f"robots.txt disallows access to {url}", details={"url": url}
                 )
 
         # Apply rate limiting
@@ -148,10 +146,10 @@ async def extract_metadata(url: str) -> dict[str, Any]:
     """
     Extract basic metadata from a webpage (title, description, etc.).
     Only fetches public information, respects robots.txt.
-    
+
     Args:
         url: URL to extract metadata from
-        
+
     Returns:
         Dictionary containing page metadata
     """
@@ -165,8 +163,7 @@ async def extract_metadata(url: str) -> dict[str, Any]:
             robots_check = await check_robots_txt(url)
             if not robots_check.get("can_fetch", True):
                 raise EthicalViolationError(
-                    f"robots.txt disallows access to {url}",
-                    details={"url": url}
+                    f"robots.txt disallows access to {url}", details={"url": url}
                 )
 
         # Apply rate limiting
@@ -235,10 +232,10 @@ async def extract_metadata(url: str) -> dict[str, Any]:
 async def check_ssl_certificate(domain: str) -> dict[str, Any]:
     """
     Check SSL/TLS certificate information for a domain.
-    
+
     Args:
         domain: Domain to check
-        
+
     Returns:
         Dictionary containing SSL certificate information
     """

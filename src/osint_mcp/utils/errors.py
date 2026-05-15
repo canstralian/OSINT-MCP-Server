@@ -1,4 +1,5 @@
 """Error handling utilities for OSINT MCP Server."""
+
 import logging
 from typing import Any
 
@@ -16,26 +17,31 @@ class OSINTError(Exception):
 
 class RateLimitError(OSINTError):
     """Raised when rate limit is exceeded."""
+
     pass
 
 
 class EthicalViolationError(OSINTError):
     """Raised when an operation violates ethical guardrails."""
+
     pass
 
 
 class InvalidInputError(OSINTError):
     """Raised when input validation fails."""
+
     pass
 
 
 class NetworkError(OSINTError):
     """Raised when network operations fail."""
+
     pass
 
 
 class DataNotFoundError(OSINTError):
     """Raised when requested data is not available."""
+
     pass
 
 
@@ -89,8 +95,6 @@ def validate_result(result: Any, expected_fields: list[str] | None = None) -> bo
     if expected_fields and isinstance(result, dict):
         missing = [field for field in expected_fields if field not in result]
         if missing:
-            raise InvalidInputError(
-                f"Missing required fields: {', '.join(missing)}"
-            )
+            raise InvalidInputError(f"Missing required fields: {', '.join(missing)}")
 
     return True

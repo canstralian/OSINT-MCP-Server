@@ -1,4 +1,5 @@
 """Validation utilities for OSINT operations."""
+
 import re
 from urllib.parse import urlparse
 
@@ -11,13 +12,13 @@ from .errors import EthicalViolationError, InvalidInputError
 def validate_domain(domain: str) -> str:
     """
     Validate and sanitize a domain name.
-    
+
     Args:
         domain: Domain name to validate
-        
+
     Returns:
         Sanitized domain name
-        
+
     Raises:
         InvalidInputError: If domain is invalid
         EthicalViolationError: If domain is blocked
@@ -38,8 +39,7 @@ def validate_domain(domain: str) -> str:
     # Check against blocked domains
     if domain in config.ethical_guardrails.blocked_domains:
         raise EthicalViolationError(
-            f"Domain '{domain}' is blocked by ethical guardrails",
-            details={"domain": domain}
+            f"Domain '{domain}' is blocked by ethical guardrails", details={"domain": domain}
         )
 
     return domain
@@ -48,13 +48,13 @@ def validate_domain(domain: str) -> str:
 def validate_ip_address(ip: str) -> str:
     """
     Validate an IP address.
-    
+
     Args:
         ip: IP address to validate
-        
+
     Returns:
         Sanitized IP address
-        
+
     Raises:
         InvalidInputError: If IP address is invalid
     """
@@ -69,13 +69,13 @@ def validate_ip_address(ip: str) -> str:
 def validate_url(url: str) -> str:
     """
     Validate a URL.
-    
+
     Args:
         url: URL to validate
-        
+
     Returns:
         Sanitized URL
-        
+
     Raises:
         InvalidInputError: If URL is invalid
     """
@@ -90,13 +90,13 @@ def validate_url(url: str) -> str:
 def validate_email(email: str) -> str:
     """
     Validate an email address (for metadata lookup only).
-    
+
     Args:
         email: Email address to validate
-        
+
     Returns:
         Sanitized email address
-        
+
     Raises:
         InvalidInputError: If email is invalid
     """
@@ -111,14 +111,14 @@ def validate_email(email: str) -> str:
 def sanitize_input(text: str, max_length: int = 1000) -> str:
     """
     Sanitize user input to prevent injection attacks.
-    
+
     Args:
         text: Text to sanitize
         max_length: Maximum allowed length
-        
+
     Returns:
         Sanitized text
-        
+
     Raises:
         InvalidInputError: If input is invalid
     """
@@ -134,6 +134,6 @@ def sanitize_input(text: str, max_length: int = 1000) -> str:
         raise InvalidInputError("Input cannot be empty")
 
     # Remove control characters except whitespace
-    text = re.sub(r'[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]', '', text)
+    text = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]", "", text)
 
     return text

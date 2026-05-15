@@ -1,4 +1,5 @@
 """Main OSINT MCP Server implementation."""
+
 import logging
 from typing import Any
 
@@ -22,8 +23,7 @@ from .utils import handle_error
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -38,23 +38,26 @@ async def list_tools() -> list[Tool]:
     return [
         Tool(
             name="dns_lookup",
-            description="Perform DNS lookup for a domain. Supports various record types (A, AAAA, MX, NS, TXT, etc.)",
+            description=(
+                "Perform DNS lookup for a domain. Supports various record types"
+                " (A, AAAA, MX, NS, TXT, etc.)"
+            ),
             inputSchema={
                 "type": "object",
                 "properties": {
                     "domain": {
                         "type": "string",
-                        "description": "Domain name to lookup (e.g., example.com)"
+                        "description": "Domain name to lookup (e.g., example.com)",
                     },
                     "record_type": {
                         "type": "string",
                         "description": "DNS record type (default: A)",
                         "enum": ["A", "AAAA", "MX", "NS", "TXT", "CNAME", "SOA"],
-                        "default": "A"
-                    }
+                        "default": "A",
+                    },
                 },
-                "required": ["domain"]
-            }
+                "required": ["domain"],
+            },
         ),
         Tool(
             name="reverse_dns_lookup",
@@ -64,11 +67,11 @@ async def list_tools() -> list[Tool]:
                 "properties": {
                     "ip_address": {
                         "type": "string",
-                        "description": "IP address to lookup (IPv4 or IPv6)"
+                        "description": "IP address to lookup (IPv4 or IPv6)",
                     }
                 },
-                "required": ["ip_address"]
-            }
+                "required": ["ip_address"],
+            },
         ),
         Tool(
             name="get_nameservers",
@@ -76,13 +79,10 @@ async def list_tools() -> list[Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "domain": {
-                        "type": "string",
-                        "description": "Domain name to lookup"
-                    }
+                    "domain": {"type": "string", "description": "Domain name to lookup"}
                 },
-                "required": ["domain"]
-            }
+                "required": ["domain"],
+            },
         ),
         Tool(
             name="get_mx_records",
@@ -90,13 +90,10 @@ async def list_tools() -> list[Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "domain": {
-                        "type": "string",
-                        "description": "Domain name to lookup"
-                    }
+                    "domain": {"type": "string", "description": "Domain name to lookup"}
                 },
-                "required": ["domain"]
-            }
+                "required": ["domain"],
+            },
         ),
         Tool(
             name="get_ip_info",
@@ -104,83 +101,64 @@ async def list_tools() -> list[Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "ip_address": {
-                        "type": "string",
-                        "description": "IP address to lookup"
-                    }
+                    "ip_address": {"type": "string", "description": "IP address to lookup"}
                 },
-                "required": ["ip_address"]
-            }
+                "required": ["ip_address"],
+            },
         ),
         Tool(
             name="check_ip_reputation",
-            description="Check IP reputation using threat intelligence databases (requires API key)",
+            description=(
+                "Check IP reputation using threat intelligence databases (requires API key)"
+            ),
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "ip_address": {
-                        "type": "string",
-                        "description": "IP address to check"
-                    }
+                    "ip_address": {"type": "string", "description": "IP address to check"}
                 },
-                "required": ["ip_address"]
-            }
+                "required": ["ip_address"],
+            },
         ),
         Tool(
             name="check_robots_txt",
             description="Check robots.txt for a URL and verify if it can be accessed",
             inputSchema={
                 "type": "object",
-                "properties": {
-                    "url": {
-                        "type": "string",
-                        "description": "URL to check"
-                    }
-                },
-                "required": ["url"]
-            }
+                "properties": {"url": {"type": "string", "description": "URL to check"}},
+                "required": ["url"],
+            },
         ),
         Tool(
             name="get_http_headers",
             description="Get HTTP headers for a URL (uses HEAD request, minimal bandwidth)",
             inputSchema={
                 "type": "object",
-                "properties": {
-                    "url": {
-                        "type": "string",
-                        "description": "URL to check"
-                    }
-                },
-                "required": ["url"]
-            }
+                "properties": {"url": {"type": "string", "description": "URL to check"}},
+                "required": ["url"],
+            },
         ),
         Tool(
             name="extract_metadata",
-            description="Extract basic metadata from a webpage (title, description, etc.). Respects robots.txt.",
+            description=(
+                "Extract basic metadata from a webpage (title, description, etc.)."
+                " Respects robots.txt."
+            ),
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "url": {
-                        "type": "string",
-                        "description": "URL to extract metadata from"
-                    }
+                    "url": {"type": "string", "description": "URL to extract metadata from"}
                 },
-                "required": ["url"]
-            }
+                "required": ["url"],
+            },
         ),
         Tool(
             name="check_ssl_certificate",
             description="Check SSL/TLS certificate information for a domain",
             inputSchema={
                 "type": "object",
-                "properties": {
-                    "domain": {
-                        "type": "string",
-                        "description": "Domain to check"
-                    }
-                },
-                "required": ["domain"]
-            }
+                "properties": {"domain": {"type": "string", "description": "Domain to check"}},
+                "required": ["domain"],
+            },
         ),
     ]
 
@@ -195,10 +173,7 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
         result = None
 
         if name == "dns_lookup":
-            result = await dns_lookup(
-                arguments["domain"],
-                arguments.get("record_type", "A")
-            )
+            result = await dns_lookup(arguments["domain"], arguments.get("record_type", "A"))
         elif name == "reverse_dns_lookup":
             result = await reverse_dns_lookup(arguments["ip_address"])
         elif name == "get_nameservers":
@@ -218,32 +193,26 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
         elif name == "check_ssl_certificate":
             result = await check_ssl_certificate(arguments["domain"])
         else:
-            result = {
-                "success": False,
-                "error": f"Unknown tool: {name}"
-            }
+            result = {"success": False, "error": f"Unknown tool: {name}"}
 
         # Format result as TextContent
         import json
-        return [TextContent(
-            type="text",
-            text=json.dumps(result, indent=2)
-        )]
+
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
 
     except Exception as e:
         logger.error(f"Error executing tool {name}: {e}", exc_info=True)
         error_result = handle_error(e, f"Tool execution: {name}")
         import json
-        return [TextContent(
-            type="text",
-            text=json.dumps(error_result, indent=2)
-        )]
+
+        return [TextContent(type="text", text=json.dumps(error_result, indent=2))]
 
 
 def main():
     """Run the OSINT MCP Server."""
     logger.info(f"Starting {config.server_name} v{config.version}")
-    logger.info(f"Ethical guardrails enabled: rate_limit={config.ethical_guardrails.rate_limit_per_minute}/min")
+    rate_limit = config.ethical_guardrails.rate_limit_per_minute
+    logger.info(f"Ethical guardrails enabled: rate_limit={rate_limit}/min")
     logger.info(f"Respecting robots.txt: {config.ethical_guardrails.respect_robots_txt}")
 
     import asyncio
@@ -252,11 +221,7 @@ def main():
 
     async def run_server():
         async with stdio_server() as (read_stream, write_stream):
-            await app.run(
-                read_stream,
-                write_stream,
-                app.create_initialization_options()
-            )
+            await app.run(read_stream, write_stream, app.create_initialization_options())
 
     asyncio.run(run_server())
 

@@ -1,4 +1,5 @@
 """OSINT tools module."""
+
 from .dns_tools import (
     dns_lookup,
     get_mx_records,
